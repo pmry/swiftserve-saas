@@ -1,3 +1,4 @@
+<img width="1920" height="975" alt="image" src="https://github.com/user-attachments/assets/947c1f8c-7452-4fd6-93f7-08678dbc5382" />
 # 🍽️ SwiftServe SaaS - Restaurant POS & QR Menu System
 
 SwiftServe is a full-stack, real-time Restaurant Management System designed to bridge the gap between customer ordering, kitchen operations, and front-desk billing. It eliminates friction in the dining experience by digitizing the entire restaurant workflow.
