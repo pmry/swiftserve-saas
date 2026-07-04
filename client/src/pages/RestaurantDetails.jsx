@@ -8,6 +8,14 @@ export default function RestaurantDetails() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // FIXED: Dynamic URL logic for deployment
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   const [formData, setFormData] = useState({
     name: '',
     about: '',
@@ -31,7 +39,8 @@ export default function RestaurantDetails() {
 
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/restaurants', payload, {
+      // FIXED: Point to getBackendUrl() instead of localhost
+      const res = await axios.post(`${getBackendUrl()}/api/restaurants`, payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
