@@ -9,7 +9,6 @@ export default function MenuSetup() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // FIXED: Dynamic URL logic for Render/Vercel deployment
   const getBackendUrl = () => {
     if (window.location.hostname === 'localhost') {
       return 'http://localhost:5000';
@@ -17,12 +16,10 @@ export default function MenuSetup() {
     return 'https://swiftserve-saas.onrender.com';
   };
 
-  // Default Categories list
   const [categories, setCategories] = useState(['Appetizers', 'Main Course', 'Desserts', 'Drinks']);
   const [newCategory, setNewCategory] = useState('');
   const [activePreviewCategory, setActivePreviewCategory] = useState('Appetizers');
 
-  // Menu items list state
   const [menuItems, setMenuItems] = useState([]);
   const [itemForm, setItemForm] = useState({
     name: '',
@@ -75,7 +72,6 @@ export default function MenuSetup() {
 
     try {
       const token = localStorage.getItem('token');
-      // FIXED: Using the new getBackendUrl helper
       await axios.post(`${getBackendUrl()}/api/menu/${restaurantId}/batch`, {
         items: menuItems,
         categories: categories
@@ -94,7 +90,7 @@ export default function MenuSetup() {
     <div className="min-h-screen flex bg-[#0a0a0a] text-white font-sans selection:bg-emerald-500/30">
       <div className="flex-1 flex flex-col md:flex-row w-full max-w-7xl mx-auto p-4 gap-4">
         
-        {/* LEFT PANEL: Live Interactive Menu Preview (Simulated Phone View) */}
+        {/* LEFT PANEL */}
         <div className="hidden lg:flex md:w-[40%] rounded-[2rem] bg-gradient-to-br from-[#113d2f] via-[#0b261d] to-[#05100c] p-8 flex-col justify-between relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_40%_20%,rgba(52,211,153,0.1),transparent_60%)]"></div>
           
@@ -106,17 +102,14 @@ export default function MenuSetup() {
               <p className="text-[#a0bba8] text-xs mb-6">Real-time smartphone customer viewport mockup.</p>
             </div>
 
-            {/* Simulated Smartphone Screen container */}
             <div className="w-full bg-[#0d0d0d] border border-white/10 rounded-[2.2rem] h-[460px] shadow-2xl relative overflow-hidden flex flex-col">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-emerald-500"></div>
               
-              {/* Internal Mock Header */}
               <div className="p-4 border-b border-white/5 bg-[#121212] flex items-center justify-between">
                 <span className="text-[11px] font-semibold text-slate-300">Our Digital Menu</span>
                 <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">T-04</span>
               </div>
 
-              {/* Mock Horizonal Category List Tabs */}
               <div className="flex gap-2 p-3 overflow-x-auto no-scrollbar border-b border-white/5 bg-[#0a0a0a]">
                 {categories.map((cat, idx) => (
                   <button
@@ -133,7 +126,6 @@ export default function MenuSetup() {
                 ))}
               </div>
 
-              {/* Items View List */}
               <div className="flex-1 p-3 overflow-y-auto no-scrollbar space-y-2 bg-[#0d0d0d]">
                 {menuItems.filter(i => i.category === activePreviewCategory).length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center text-center p-4">
@@ -161,7 +153,6 @@ export default function MenuSetup() {
               </div>
             </div>
 
-            {/* Visual Step Tracker indicator bar */}
             <div className="flex gap-4 mt-6 justify-center">
               <span className="w-8 h-1 bg-white/20 rounded-full"></span>
               <span className="w-8 h-1 bg-white/20 rounded-full"></span>
@@ -170,11 +161,10 @@ export default function MenuSetup() {
           </div>
         </div>
 
-        {/* RIGHT PANEL: Category Creation & Item Buffer Stack Lists */}
+        {/* RIGHT PANEL */}
         <div className="flex-1 flex flex-col justify-start p-4 md:p-8 lg:p-12 overflow-y-auto no-scrollbar">
           <div className="w-full max-w-2xl mx-auto">
             
-            {/* Nav Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-white/5 pb-6 mb-8 gap-4">
               <div>
                 <h2 className="text-2xl font-semibold mb-1">Assemble Menu Layout</h2>
@@ -195,7 +185,7 @@ export default function MenuSetup() {
             )}
 
             <div className="space-y-6">
-              {/* SECTION 1: Category Dynamic Injection Engine */}
+              
               <div className="bg-[#121212] rounded-2xl p-5 border border-white/5">
                 <label className="flex items-center gap-2 text-[11px] font-medium text-[#aaaaaa] mb-3 uppercase tracking-wider">
                   <LayoutGrid size={14} className="text-emerald-400" /> 1. Menu Taxonomy Groups
@@ -221,7 +211,6 @@ export default function MenuSetup() {
                 </div>
               </div>
 
-              {/* SECTION 2: Add Menu Item Form */}
               <div className="bg-[#121212] rounded-2xl p-5 border border-white/5">
                 <label className="flex items-center gap-2 text-[11px] font-medium text-[#aaaaaa] mb-5 uppercase tracking-wider border-b border-white/5 pb-2">
                   <Utensils size={14} className="text-emerald-400" /> 2. Add New Catalog Item
@@ -299,7 +288,6 @@ export default function MenuSetup() {
                 </form>
               </div>
 
-              {/* SECTION 3: Current Staged Buffer List Trash Bin Operations */}
               <div className="bg-[#121212] rounded-2xl p-5 border border-white/5">
                 <label className="block text-[11px] font-medium text-slate-500 mb-4 uppercase tracking-wider">
                   Staged Catalog Queue ({menuItems.length})
