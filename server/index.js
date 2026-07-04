@@ -16,15 +16,11 @@ const app = express();
 // ==========================================
 // 2. GLOBAL ROUTER MIDDLEWARE & CORS CONTEXT
 // ==========================================
+// 🚨 FIXED: Allow all origins so Vercel can talk to Render
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin) return callback(null, true);
-    
-    if (origin.startsWith('http://localhost') || origin.endsWith('.devtunnels.ms')) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Blocked by CORS policy'));
-    }
+    // This allows any frontend URL (like Vercel) to connect securely
+    callback(null, true);
   },
   credentials: true, 
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
