@@ -11,9 +11,11 @@ export default function HistoryMetrics({ restaurantId }) {
     const fetchMetrics = async () => {
       try {
         const token = localStorage.getItem('token');
+        
+        // FIXED: Point to Render in Production!
         const backendBaseUrl = window.location.hostname === 'localhost' 
           ? 'http://localhost:5000' 
-          : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
+          : 'https://swiftserve-saas.onrender.com';
 
         const res = await axios.get(`${backendBaseUrl}/api/orders/${restaurantId}/metrics`, {
           headers: { Authorization: `Bearer ${token}` }

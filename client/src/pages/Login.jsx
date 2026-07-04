@@ -8,12 +8,21 @@ export default function Login() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // FIXED: Moved the URL generator outside the handler so it can be cleanly used
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); 
     
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      // FIXED: Actually use the getBackendUrl() function here instead of hardcoded localhost
+      const res = await axios.post(`${getBackendUrl()}/api/auth/login`, formData);
       
       // Save the security token
       localStorage.setItem('token', res.data.token);

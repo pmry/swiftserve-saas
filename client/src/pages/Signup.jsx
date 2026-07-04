@@ -7,6 +7,14 @@ export default function Signup() {
   const [formData, setFormData] = useState({ firstName: '', lastName: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
 
+  // FIXED: Point to Render in Production!
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
@@ -16,7 +24,8 @@ export default function Signup() {
         password: formData.password
       };
 
-      const res = await axios.post('http://localhost:5000/api/auth/register', payload);
+      // FIXED: Use the dynamic URL
+      const res = await axios.post(`${getBackendUrl()}/api/auth/register`, payload);
       localStorage.setItem('token', res.data.token);
       window.location.href = '/home';
     } catch (err) {

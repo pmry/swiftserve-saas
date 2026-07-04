@@ -7,14 +7,18 @@ export default function BillingControl({ restaurantId }) {
   const [loading, setLoading] = useState(true);
   const [allOrdersDebug, setAllOrdersDebug] = useState([]); // Added to see everything
 
+  // FIXED: Point to Render in Production!
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   const fetchUnpaidBills = async () => {
     try {
       const token = localStorage.getItem('token');
-      const backendBaseUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
-
-      const res = await axios.get(`${backendBaseUrl}/api/orders/${restaurantId}/pending`, {
+      const res = await axios.get(`${getBackendUrl()}/api/orders/${restaurantId}/pending`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -44,11 +48,7 @@ export default function BillingControl({ restaurantId }) {
   const confirmPayment = async (orderId) => {
     try {
       const token = localStorage.getItem('token');
-      const backendBaseUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
-
-      await axios.put(`${backendBaseUrl}/api/orders/${orderId}/status`, 
+      await axios.put(`${getBackendUrl()}/api/orders/${orderId}/status`, 
         { status: 'Fulfilled' },
         { headers: { Authorization: `Bearer ${token}` } }
       );

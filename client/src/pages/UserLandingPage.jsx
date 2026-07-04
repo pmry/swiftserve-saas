@@ -10,6 +10,15 @@ export default function UserLandingPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+
+ // FIXED: Dynamic URL logic for deployment
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   // QR Preview Modal System States
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
@@ -19,7 +28,8 @@ export default function UserLandingPage() {
   const fetchBranches = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/api/restaurants', {
+      // FIXED: Using getBackendUrl()
+      const res = await axios.get(`${getBackendUrl()}/api/restaurants`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) setRestaurants(res.data.data);

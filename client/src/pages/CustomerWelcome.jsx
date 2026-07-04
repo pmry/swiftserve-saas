@@ -14,10 +14,19 @@ export default function CustomerWelcome() {
   // Captures table position from QR parameters and allows user adjustments
   const [tableInput, setTableInput] = useState(searchParams.get('table') || '01');
 
+// FIXED: Point to Render in Production!
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   useEffect(() => {
     const fetchPublicMeta = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/restaurants/public/${restaurantId}`);
+        // FIXED: Using the new getBackendUrl helper
+        const res = await axios.get(`${getBackendUrl()}/api/restaurants/public/${restaurantId}`);
         if (res.data.success) setRestaurant(res.data.data);
       } catch (err) {
         // Safe preview fallback if database connection is offline

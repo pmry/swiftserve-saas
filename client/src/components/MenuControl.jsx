@@ -20,13 +20,12 @@ export default function MenuControl({ restaurantId }) {
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
 
-  // Human-engineered function to safely determine the base endpoint API address
+  // FIXED: Point to Render in Production!
   const getBackendUrl = () => {
     if (window.location.hostname === 'localhost') {
       return 'http://localhost:5000';
     }
-    // Automatically transposes the client port map over to the target server port layout inside Dev Tunnels
-    return `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
+    return 'https://swiftserve-saas.onrender.com';
   };
 
   // Synchronize current menu records index catalog out of the backend cluster

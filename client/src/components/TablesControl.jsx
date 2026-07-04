@@ -18,10 +18,19 @@ export default function TablesControl({ restaurantId }) {
   const [activeQrUrl, setActiveQrUrl] = useState('');
   const [activeQrTable, setActiveQrTable] = useState('');
 
+  // FIXED: Added dynamic backend URL router for production
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
   const fetchTableMatrix = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get(`http://localhost:5000/api/restaurants`, {
+      // FIXED: Uses dynamic URL
+      const res = await axios.get(`${getBackendUrl()}/api/restaurants`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const currentBranch = res.data.data.find(b => b._id === restaurantId);
@@ -61,8 +70,9 @@ export default function TablesControl({ restaurantId }) {
 
     try {
       const token = localStorage.getItem('token');
+      // FIXED: Uses dynamic URL
       // Patches tablesCount scale variable down to the active restaurant model parameters
-      await axios.put(`http://localhost:5000/api/restaurants/${restaurantId}`, 
+      await axios.put(`${getBackendUrl()}/api/restaurants/${restaurantId}`, 
         { tablesCount: newCount },
         { headers: { Authorization: `Bearer ${token}` }}
       );

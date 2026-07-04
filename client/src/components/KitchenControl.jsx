@@ -8,10 +8,12 @@ export default function KitchenControl({ restaurantId }) {
   const [error, setError] = useState('');
   const isMounted = useRef(true);
 
-  const getBackendUrl = () => {
-    if (window.location.hostname === 'localhost') return 'http://localhost:5000';
-    return `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
-  };
+  function getBackendUrl() {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  }
 
   const fetchActiveTickets = async (isInitialLoad = false) => {
     try {
@@ -44,7 +46,9 @@ export default function KitchenControl({ restaurantId }) {
     // WORKFLOW: Pending -> Preparing -> Ready -> Fulfilled (Complete)
     let nextStatus = 'Preparing';
     if (currentStatus === 'Preparing') nextStatus = 'Ready';
-    if (currentStatus === 'Ready') nextStatus = 'Fulfilled'; // CHANGED: Directly to Fulfilled
+    
+    // Sends to customer for final checkout/history
+    if (currentStatus === 'Ready') nextStatus = 'Fulfilled'; 
 
     try {
       const token = localStorage.getItem('token');

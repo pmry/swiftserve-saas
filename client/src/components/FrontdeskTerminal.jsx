@@ -1,42 +1,63 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { CreditCard, CheckCircle2, Receipt, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function FrontdeskTerminal({ restaurantId }) {
   const [unpaidOrders, setUnpaidOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
 
-  const fetchActiveBills = async () => {
+  // FIXED: Point to Render in Production!
+  const getBackendUrl = () => {
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
+  };
+
+  const fetchActiveBills = async (isInitial = false) => {
     try {
-      const backendBaseUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:5000' 
-        : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
-
-      const res = await axios.get(`${backendBaseUrl}/api/orders/${restaurantId}/pending`);
+      const token = localStorage.getItem('token'); // ADDED: Security Token
       
-      // Filter for orders specifically in 'Awaiting Payment' status
-      const bills = res.data.orders.filter(o => o.status === 'Awaiting Payment');
-      setUnpaidOrders(bills);
+      const res = await axios.get(`${getBackendUrl()}/api/orders/${restaurantId}/pending`, {
+        headers: { Authorization: `Bearer ${token}` } // ADDED: Auth Header
+      });
+      
+      if (res.data.success && isMounted.current) {
+        // Filter for orders specifically in 'Awaiting Payment' status
+        const bills = res.data.orders.filter(o => o.status === 'Awaiting Payment');
+        setUnpaidOrders(bills);
+      }
     } catch (err) {
       console.error("Cashier sync error", err);
     } finally {
-      setLoading(false);
+      if (isInitial && isMounted.current) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchActiveBills();
-    const interval = setInterval(fetchActiveBills, 3000); // Poll for live updates
-    return () => clearInterval(interval);
+    isMounted.current = true;
+    fetchActiveBills(true);
+    const interval = setInterval(() => fetchActiveBills(false), 3000); // Poll for live updates
+    return () => {
+      isMounted.current = false;
+      clearInterval(interval);
+    };
   }, [restaurantId]);
 
   const processPayment = async (orderId) => {
-    const backendBaseUrl = window.location.hostname === 'localhost' 
-      ? 'http://localhost:5000' 
-      : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
-
-    await axios.put(`${backendBaseUrl}/api/orders/${orderId}/status`, { status: 'Fulfilled' });
-    fetchActiveBills(); // Refresh list immediately
+    try {
+      const token = localStorage.getItem('token'); // ADDED: Security Token
+      
+      await axios.put(`${getBackendUrl()}/api/orders/${orderId}/status`, 
+        { status: 'Fulfilled' },
+        { headers: { Authorization: `Bearer ${token}` } } // ADDED: Auth Header
+      );
+      
+      fetchActiveBills(); // Refresh list immediately
+    } catch (err) {
+      alert("Failed to process payment. Please check connection.");
+    }
   };
 
   return (
@@ -45,7 +66,7 @@ export default function FrontdeskTerminal({ restaurantId }) {
         <h1 className="text-2xl font-black flex items-center gap-2">
           <CreditCard className="text-emerald-400" /> FRONTDESK TERMINAL
         </h1>
-        <button onClick={fetchActiveBills} className="p-2 hover:bg-white/5 rounded-full"><RefreshCw size={18}/></button>
+        <button onClick={() => fetchActiveBills(false)} className="p-2 hover:bg-white/5 rounded-full"><RefreshCw size={18}/></button>
       </div>
 
       {unpaidOrders.length === 0 ? (

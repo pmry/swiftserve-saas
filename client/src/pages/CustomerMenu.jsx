@@ -50,10 +50,12 @@ export default function CustomerMenu() {
   const [cancelModalOpen, setCancelModalOpen] = useState(false);
   const [orderToCancel, setOrderToCancel] = useState(null);
 
-  // Dev Tunnel Safe URL Generator
+  // FIXED: Point to Render in Production!
   const getBackendUrl = () => {
-    if (window.location.hostname === 'localhost') return 'http://localhost:5000';
-    return `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
+    if (window.location.hostname === 'localhost') {
+      return 'http://localhost:5000';
+    }
+    return 'https://swiftserve-saas.onrender.com';
   };
 
   // Fetch true live menu data and restaurant properties from MongoDB
@@ -178,6 +180,20 @@ export default function CustomerMenu() {
     setCart({});
     setOrderModalOpen(true);
     setActiveTab('orders');
+  };
+
+  // FINALIZE BILLING: Updates DB to 'Fulfilled' for History tracking
+  const finalizeBilling = async () => {
+    try {
+      for (const order of submittedOrders) {
+        if (order.status !== 'Fulfilled') {
+          await axios.put(`${getBackendUrl()}/api/orders/${order.dbId}/status`, { status: 'Fulfilled' });
+        }
+      }
+      setPaymentComplete(true);
+    } catch (err) {
+      alert("Could not finalize. Please try again.");
+    }
   };
 
   const filteredItems = menuItems.filter(item => {
@@ -454,7 +470,7 @@ export default function CustomerMenu() {
 
                 {selectedPaymentMethod === 'cash' && (
                   <button 
-                    onClick={() => setPaymentComplete(true)}
+                    onClick={finalizeBilling}
                     className="w-full bg-[#FFB01D] text-black py-3 rounded-xl font-black text-xs transition shadow-md flex items-center justify-center gap-1 cursor-pointer hover:bg-yellow-400"
                   >
                     Request Bill Settlement Call

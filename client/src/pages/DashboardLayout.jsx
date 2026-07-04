@@ -15,16 +15,18 @@ import FrontdeskTerminal from '../components/FrontdeskTerminal'; // <-- Added Bi
 export default function DashboardLayout() {
   const { restaurantId } = useParams();
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
-  const [activeTab, setActiveTab] = useState('menu'); 
+  const [activeTab, setActiveTab] = useState('menu');
   const [restaurantName, setRestaurantName] = useState('Workspace Branch');
 
+
+  
   useEffect(() => {
     const fetchBranchMeta = async () => {
       try {
         const token = localStorage.getItem('token');
-        const backendBaseUrl = window.location.hostname === 'localhost' 
-          ? 'http://localhost:5000' 
-          : `${window.location.protocol}//${window.location.hostname.replace('-5173', '-5000')}`;
+        const backendBaseUrl = window.location.hostname === 'localhost'
+          ? 'http://localhost:5000'
+          : 'https://swiftserve-saas.onrender.com'; // Fixed to production URL
 
         const res = await axios.get(`${backendBaseUrl}/api/restaurants`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -38,12 +40,11 @@ export default function DashboardLayout() {
 
   return (
     <div className="min-h-screen flex bg-[#0a0a0a] text-white font-sans selection:bg-emerald-500/30">
-      
+
       {/* SIDEBAR NAVIGATION */}
-      <aside className={`bg-[#0d0d0d] border-r border-white/5 flex flex-col justify-between p-4 transition-all duration-300 relative select-none ${
-        isSidebarExpanded ? 'w-64' : 'w-20'
-      }`}>
-        <button 
+      <aside className={`bg-[#0d0d0d] border-r border-white/5 flex flex-col justify-between p-4 transition-all duration-300 relative select-none ${isSidebarExpanded ? 'w-64' : 'w-20'
+        }`}>
+        <button
           onClick={() => setIsSidebarExpanded(!isSidebarExpanded)}
           className="absolute -right-3 top-8 w-6 h-6 rounded-full bg-[#121212] border border-white/10 flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer z-50 shadow-xl"
         >
@@ -66,9 +67,8 @@ export default function DashboardLayout() {
           <nav className="space-y-1">
             <button
               onClick={() => setActiveTab('menu')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${
-                activeTab === 'menu' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${activeTab === 'menu' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               <Utensils size={16} className={activeTab === 'menu' ? 'text-emerald-400' : ''} />
               {isSidebarExpanded && <span>Menu Management</span>}
@@ -76,9 +76,8 @@ export default function DashboardLayout() {
 
             <button
               onClick={() => setActiveTab('tables')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${
-                activeTab === 'tables' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${activeTab === 'tables' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               <Grid size={16} className={activeTab === 'tables' ? 'text-emerald-400' : ''} />
               {isSidebarExpanded && <span>Table Operations</span>}
@@ -86,9 +85,8 @@ export default function DashboardLayout() {
 
             <button
               onClick={() => setActiveTab('kitchen')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${
-                activeTab === 'kitchen' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${activeTab === 'kitchen' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               <ChefHat size={16} className={activeTab === 'kitchen' ? 'text-emerald-400' : ''} />
               {isSidebarExpanded && <span>Kitchen Tickets</span>}
@@ -97,9 +95,8 @@ export default function DashboardLayout() {
             {/* ---> BILLING / FRONTDESK CHECKOUT TAB <--- */}
             <button
               onClick={() => setActiveTab('billing')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${
-                activeTab === 'billing' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${activeTab === 'billing' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               <CreditCard size={16} className={activeTab === 'billing' ? 'text-blue-400' : ''} />
               {isSidebarExpanded && <span>Frontdesk Checkout</span>}
@@ -107,9 +104,8 @@ export default function DashboardLayout() {
 
             <button
               onClick={() => setActiveTab('metrics')}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${
-                activeTab === 'metrics' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-medium transition cursor-pointer ${activeTab === 'metrics' ? 'bg-white/5 border border-white/10 text-white font-semibold' : 'text-slate-400 hover:text-white hover:bg-white/5'
+                }`}
             >
               <TrendingUp size={16} className={activeTab === 'metrics' ? 'text-emerald-400' : ''} />
               {isSidebarExpanded && <span>History & Revenue</span>}
@@ -137,7 +133,7 @@ export default function DashboardLayout() {
         {/* ---> BILLING COMPONENT RENDERED HERE <--- */}
         {activeTab === 'billing' && <BillingControl restaurantId={restaurantId} />}
         {activeTab === 'metrics' && <HistoryMetrics restaurantId={restaurantId} />}
-        {activeTab === 'frontdesk'&& <FrontdeskTerminal restaurantId={restaurantId} />}
+        {activeTab === 'frontdesk' && <FrontdeskTerminal restaurantId={restaurantId} />}
       </main>
 
     </div>
